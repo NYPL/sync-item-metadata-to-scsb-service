@@ -1,5 +1,6 @@
 require 'aws-sdk-sqs'
-require 'lib/kms_client'
+
+require_relative './kms_client'
 
 class SqsClient
   def initialize

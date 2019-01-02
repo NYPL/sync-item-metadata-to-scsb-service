@@ -60,3 +60,9 @@ Given that gems are installed with the `--deployment` flag, Bundler will complai
 ```
 bundle install --no-deployment
 ```
+
+## Testing
+
+```
+bundle exec rspec
+```

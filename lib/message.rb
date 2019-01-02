@@ -1,6 +1,6 @@
 require 'active_model'
 
-require 'lib/sqs_client'
+require_relative './sqs_client'
 
 class Message
   extend ActiveModel::Naming
