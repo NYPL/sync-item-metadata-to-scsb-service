@@ -1,9 +1,9 @@
 # Sync Item Metadata to SCSB Service
 
-This is a small Ruby app deployed as an AWS Lambbda behind API Gateway to serve the following:
+This is a small Ruby app deployed as an AWS Lambda behind API Gateway to serve the following:
 
 ```
-POST /api/v0.1/recap/sync-item-metadata-to-scsb-service
+POST /api/v0.1/recap/sync-item-metadata-to-scsb
 ```
 
 ## Setup

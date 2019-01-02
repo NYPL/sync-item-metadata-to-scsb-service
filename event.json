@@ -58,6 +58,6 @@
   "stageVariables": {
     "baz": "qux"
   }, 
-  "path": "/api/v0.1/recap/sync-item-metadata-to-scsb-service",
+  "path": "/api/v0.1/recap/sync-item-metadata-to-scsb",
   "isBase64Encoded": true
 }

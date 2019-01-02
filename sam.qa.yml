@@ -16,5 +16,5 @@ Resources:
         Api:
           Type: Api
           Properties:
-            Path: /api/v0.1/recap/sync-item-metadata-to-scsb-service
+            Path: /api/v0.1/recap/sync-item-metadata-to-scsb
             Method: post

@@ -33,7 +33,7 @@ def prepare_message(params)
 end
 
 def validate_request(event)
-  raise "Invalid request" if event["path"] != "/api/v0.1/recap/sync-item-metadata-to-scsb-service"
+  raise "Invalid request" if event["path"] != "/api/v0.1/recap/sync-item-metadata-to-scsb"
 
   raise ParameterError.new("No parameters given") if event['queryStringParameters'].blank?
 
