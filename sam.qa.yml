@@ -1,0 +1,20 @@
+AWSTemplateFormatVersion: '2010-09-09'
+Transform: AWS::Serverless-2016-10-31
+Description: 'sync-item-metadata-to-scsb-service'
+
+Resources:
+  SyncItemMetadataToScsbService:
+    Type: AWS::Serverless::Function
+    Properties:
+      Handler: app.handle_event
+      Runtime: ruby2.5
+      Timeout: 10
+      Environment:
+        Variables:
+          SQS_QUEUE_URL: AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK4wgasGCSqGSIb3DQEHBqCBnTCBmgIBADCBlAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwe1oC58ZpRLL/MS5wCARCAZ5Kqhcv6JsqYnfOQx0U2riNDk4l/vkbh5os0qZEuf35VhgUylkEVk86Lr7hv8MD30POiL3nPsefEn5HxgIrgNNOmsjNjv0eQXXeefIHUGsNRNEPirDEesS33/4ZYPc/FZ62UF4tC8kI=
+      Events:
+        Api:
+          Type: Api
+          Properties:
+            Path: /api/v0.1/recap/sync-item-metadata-to-scsb-service
+            Method: post
