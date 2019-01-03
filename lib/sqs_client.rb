@@ -21,11 +21,10 @@ class SqsClient
   end 
 
   def send_message(entries)
-    resp = @sqs.send_message_batch({
+    @sqs.send_message_batch({
       queue_url: @sqs_queue_url,
       entries: entries,
-    })  
-    resp
+    })
   end 
 
   def create_queue

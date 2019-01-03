@@ -1,0 +1,31 @@
+language:
+- python
+- ruby
+python:
+- '2.7'
+branches:
+  only: master
+install:
+- pip install awscli
+- pip install aws-sam-cli
+script:
+- bundle exec rspec
+- sam validate
+- sam package --template-file sam.qa.yml --output-template-file packaged-template.yaml
+  --s3-bucket nypl-travis-builds-qa
+deploy:
+  provider: script
+  script: aws cloudformation deploy --template-file packaged-template.yaml --stack-name
+    sync-item-metadata-to-scsb-service-qa --capabilities CAPABILITY_IAM
+  skip_cleanup: true
+  on:
+    branch: master
+notifications:
+  email:
+    on_failure: always
+env:
+  global:
+  - AWS_DEFAULT_REGION=us-east-2
+  - secure: h8K/JLZX8zmHWfulu/YjN14Li3xGZi8Kh9ULb3ZPYrl8md26KgHnsdFnu9Jn9RZbK/BONRZciOydQG6zLTxcGss+ea++U//V/ODzOP6X73gdcC7xyCQ4Mx5qcdc4OR06djA4eBNqAaDbZ66ZG4qtcNYY1mHt8bzj6VAkwspQwb0R9Yj8dMHd8qlrXH/K/IdkFASAwqgiia9nRg/LsHPpmYPH3/bBn/BBis4Q7GJHGNFCt4gfILW6R6hOW+cWMaieQibnYQN30BZYE1e8RD6DoxFj6ajpzsVwlgrrzOarKLBFLG3xHIvSCxBbGvxxCVlhfmS1vPAMTjqUwhVfVt2egXnO6UYF7mctGHN+V1l3TcUnkoFnqeXA/8VcCLliFUoH4NI52Z9Era3MuD0T1EzY1EERe3FKFyQeJgssGcI5JtfTzkobaCenidXD5yN5Q8c6Z6XYcJqJmkuxKy5y+bYsOCK79nG7oEz2XgX+w2l8tGxS15isEILtBqg0G8b3qxvltzOFz6CX+skNNDwG6SfAuHjag+Vbt54t6q3iaj28OvAgq3JEN8nzCaCxtwhxqNfW0WXs7Jvg6ao9lbqjgHpfs40K+305ks3LLN1vaGZTiSeivh+0oqhtHQZrLahm6Hsf0Zlu6oTyPu13s0dz3fpWXh4JHt2IR/qnkhhQ6xOHmrI=
+  - secure: Bl/V5FDiZ46MGLGfUnVeBBjdkdEPk9YAuzMYDN6jXIecynL9c3z/QnMNsu1Qrf48JYcakJIDHS9rSagqP4EtV3lK2R1O0/E6ck7K+5tfAM+bKLFV9nIbhilqk6Fq6fFDljLp2ReuOBKowdEay2BeD2pX+KkuFXE+aAYOfbHaNSC3qJwLmcM1IkBIptpNEsOZE6Y9pHW/dRT0jFgJIY1sR9a1ElmP9AwhwOlVLj6rFQ65xfgeyqZORzy7o5p18KOnjOvpFDzeRHaTLa7Qjp44oSPkZG/sEjVQxIa2rh4FdPbT83ONrD5Qk3cfyH3c4I71YKbm3vqwK2burKA+WcEXjCk8OnSxE8iQTi97jQR5PL6LnA/XutovobEjcBBV294BTJ+wFTsTPyDEqoZRnPIRcMC8+vjqlwJZqdht4kUGKVS/8SSVDgTxMM8v9pyfUuvvXgRRRNh9Mvhagno1LbPXqvTCa5JD3N9ZN69v97ZwafvF5hu6Py0NK1Mz+HY4FjLB1Nr/AgcH/wRPchOHMEQ/Ysonu/b1nsZ10PpdoSdQ2NEnNbT7nA5YkoydQJjmDgy+aIrzQnc3AkAwUfmrd2+SsntQ1KQR1j33bDp2e7z5R/bjkowqxNCjF9vss8CnwXr7veBSCp52Aatx7GYUQdLVtW4h5fKRLAaUgTWlnkZE4to=
+  - secure: dw6EXEvb35ksyT5PFprdPY+Peb2T3ypDj/DNgHUn6AdLMnWnI4m5FwFHVa5biSoxemNJjgkxiz7VJ4IUlY9t9KdG/lbtpQ8/ezv8IFso4Egm2m/FrFizWQxR/GZ0mj0vlmM3EdAT6ah5OG+hTItIgGBLrYf8rwli7XuPr5JE6fVwhD9OqO2ZxxL7aH0dE99cRRyjn/+ZII2LPeDibNH2JZU+luL8C2y+oheSmayLb6SS4aUUgpwJl5Av+356B4qUEjuoRv+2v12yN+7fPbaISw8JEEgVpXfHjk/BKGRdkR2UFJ28o99X2gSFT/qm428xfjBCEsbZdZcGu59t8q99Sd8TGl1vgII54YGPmQlnyWQFdW+erH5Tkp4bgW/U7FAxX6YcxZFnFxV+QViXUrAhLUx5do6BWI16adSA3A7E29FaOtENa2FIfWqIuwaA0qrO3UQYEOmsiH/hhuRYUtuO67aj7vbBeW8cx/eTlm51dsfaqGyjggjdgPVTNtT3e8Dzvp1Xvpo4G4apXOOh3+0Da0izUstFi56RiCpThbsvQw7wNWo7UvTcauWIC7CTE5DJQ6q66Cya/A7h8GWMkfi/yDa9M0La5shOwA2MAHKTkDk0tqpevA4ylXk96dWCGEWpGdj72NH9SL7S407aNS8SCvxODax8iYfPR3ViIQhHNJY=

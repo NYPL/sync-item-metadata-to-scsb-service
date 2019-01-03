@@ -45,5 +45,5 @@ def validate_request(event)
 end
 
 def respond(statusCode = 200, body = nil)
-  { contentType: 'application/json', statusCode: statusCode, body: body.to_json }
+  { statusCode: statusCode, body: body.to_json, headers: { "Content-type": "application/json" } }
 end
