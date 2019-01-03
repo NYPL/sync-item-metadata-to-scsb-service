@@ -6,11 +6,12 @@ python:
 branches:
   only: master
 install:
+- bundle install
 - pip install awscli
 - pip install aws-sam-cli
 script:
 - bundle exec rspec
-- sam validate
+- sam validate --template sam.qa.yml
 - sam package --template-file sam.qa.yml --output-template-file packaged-template.yaml
   --s3-bucket nypl-travis-builds-qa
 deploy:
