@@ -3,27 +3,20 @@ language:
 - ruby
 python:
 - '2.7'
-branches:
-  only: master
 install:
 - bundle install
 - pip install awscli
 - pip install aws-sam-cli
 cache: bundler
 script:
-- export AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID_QA
-- export AWS_SECRET_ACCESS_KEY=$AWS_SECRET_ACCESS_KEY_QA
 - bundle exec rspec
-- sam validate --template sam.qa.yml
-- sam package --template-file sam.qa.yml --output-template-file packaged-template.yaml
-  --s3-bucket nypl-travis-builds-qa
 deploy:
   provider: script
-  script: aws cloudformation deploy --template-file packaged-template.yaml --stack-name
-    sync-item-metadata-to-scsb-service-qa --capabilities CAPABILITY_IAM
-  skip_cleanup: true
+  script: ./scripts/travis-deploy.sh $TRAVIS_BRANCH
+    skip_cleanup: true
   on:
-    branch: master
+    all_branches: true
+    condition: $TRAVIS_BRANCH =~ ^(development|qa|production)$
 notifications:
   email:
     on_failure: always
