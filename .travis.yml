@@ -1,23 +1,26 @@
 language:
-- python
 - ruby
-python:
-- '2.7'
 install:
 - bundle install
 - bundle install --deployment
-- pip install awscli
-- pip install aws-sam-cli
-cache: bundler
+cache:
+- bundler
 script:
 - bundle exec rspec
 deploy:
-- provider: script
-  script: ./scripts/travis-deploy.sh $TRAVIS_BRANCH
+  provider: lambda
+  function_name: SyncItemMetadataToScsb-development
+  region: us-east-1
+  role: arn:aws:iam::224280085904:role/lambda_basic_execution
+  runtime: ruby2.5
+  handler_name: app.handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=na
   skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_DEVELOPMENT"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_DEVELOPMENT"
   on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^(development|qa|production)$
+    branch: development
 notifications:
   email:
     on_failure: always
