@@ -2,13 +2,12 @@ language:
 - ruby
 install:
 - bundle install
-- bundle install --deployment
 cache:
 - bundler
 script:
 - bundle exec rspec
 deploy:
-  provider: lambda
+- provider: lambda
   function_name: SyncItemMetadataToScsb-development
   region: us-east-1
   role: arn:aws:iam::224280085904:role/lambda_basic_execution
@@ -21,6 +20,32 @@ deploy:
   secret_access_key: "$AWS_SECRET_ACCESS_KEY_DEVELOPMENT"
   on:
     branch: development
+- provider: lambda
+  function_name: SyncItemMetadataToScsb-qa
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  handler_name: app.handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=na
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_QA"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_QA"
+  on:
+    branch: qa
+- provider: lambda
+  function_name: SyncItemMetadataToScsb-production
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  handler_name: app.handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=na
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_PRODUCTION"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_PRODUCTION"
+  on:
+    branch: master
 notifications:
   email:
     on_failure: always

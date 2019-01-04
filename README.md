@@ -69,6 +69,12 @@ bundle exec rspec
 
 ## Deploy
 
+Deployments are entirely handled by Travis-ci.com. To deploy to development, qa, or production, commit code to the `development`, `qa`, and `master` branches on origin, respectively.
+
+### Manual deployments
+
+If for some reason you need to skip Travis, the following models manually deploying QA:
+
 To package for QA:
 
 ```
