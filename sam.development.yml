@@ -6,7 +6,7 @@ Resources:
   SyncItemMetadataToScsbService:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: SyncItemMetadataToScsb-development
+      FunctionName: SyncItemMetadataToScsbService-development
       Handler: app.handle_event
       Runtime: ruby2.5
       Timeout: 10

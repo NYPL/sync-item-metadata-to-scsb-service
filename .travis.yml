@@ -8,7 +8,8 @@ script:
 - bundle exec rspec
 deploy:
 - provider: lambda
-  function_name: SyncItemMetadataToScsb-development
+  function_name: SyncItemMetadataToScsbService-development
+  description: "A small service for queuing metadata sync requests to SCSB"
   region: us-east-1
   role: arn:aws:iam::224280085904:role/lambda_basic_execution
   runtime: ruby2.5
@@ -21,7 +22,8 @@ deploy:
   on:
     branch: development
 - provider: lambda
-  function_name: SyncItemMetadataToScsb-qa
+  function_name: SyncItemMetadataToScsbService-qa
+  description: "A small service for queuing metadata sync requests to SCSB"
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
@@ -34,7 +36,8 @@ deploy:
   on:
     branch: qa
 - provider: lambda
-  function_name: SyncItemMetadataToScsb-production
+  function_name: SyncItemMetadataToScsbService-production
+  description: "A small service for queuing metadata sync requests to SCSB"
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
