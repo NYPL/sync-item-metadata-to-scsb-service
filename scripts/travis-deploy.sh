@@ -11,17 +11,21 @@ if ! [[ $1 =~ ^(development|qa|production) ]] ; then
 fi
 
 ENVIRONMENT_NAME=$1
+
+# Capitalize environment name:
 ENVIRONMENT_CAPS=$(echo $ENVIRONMENT_NAME | awk '{print toupper($0)}')
 
 # Given a REPO_SLUG like "NYPL/sync-item-metadata-to-scsb-service",
 # extract just repo name (everything following slash):
 REPO_NAME=${TRAVIS_REPO_SLUG##*/}
 
+# Set AWS credentials based on which environment we're deploying to:
 eval AWS_ACCESS_KEY_ID=\$AWS_ACCESS_KEY_ID_$ENVIRONMENT_CAPS
 eval AWS_SECRET_ACCESS_KEY=\$AWS_SECRET_ACCESS_KEY_$ENVIRONMENT_CAPS
 export AWS_ACCESS_KEY_ID
 export AWS_SECRET_ACCESS_KEY
 
+# Validate template
 sam validate --template sam.$ENVIRONMENT_NAME.yml
 
 # Package to S3:
