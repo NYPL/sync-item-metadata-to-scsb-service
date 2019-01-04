@@ -27,7 +27,7 @@ deploy:
   runtime: ruby2.5
   handler_name: app.handle_event
   environment_variables:
-  - SQS_QUEUE_URL=na
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK4wgasGCSqGSIb3DQEHBqCBnTCBmgIBADCBlAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwe1oC58ZpRLL/MS5wCARCAZ5Kqhcv6JsqYnfOQx0U2riNDk4l/vkbh5os0qZEuf35VhgUylkEVk86Lr7hv8MD30POiL3nPsefEn5HxgIrgNNOmsjNjv0eQXXeefIHUGsNRNEPirDEesS33/4ZYPc/FZ62UF4tC8kI=
   skip_cleanup: true
   access_key_id: "$AWS_ACCESS_KEY_ID_QA"
   secret_access_key: "$AWS_SECRET_ACCESS_KEY_QA"
@@ -40,7 +40,7 @@ deploy:
   runtime: ruby2.5
   handler_name: app.handle_event
   environment_variables:
-  - SQS_QUEUE_URL=na
+  - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAALcwgbQGCSqGSIb3DQEHBqCBpjCBowIBADCBnQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyXGnzTuZcRzFTjPNcCARCAcFwFMNi6Gq1FnWrI/NVZrLAVywAGEkJR3r+jhZv8iKy6xTJ8s9eBK1pOc7iy6S64twdhIBRk8qttmkSUqRZfv87iySrOLARNG/V4gjMFM5x+/e7YsROHCzBPPyqT61/oiNoClgauPyeL7WUz4Ezes8U=
   skip_cleanup: true
   access_key_id: "$AWS_ACCESS_KEY_ID_PRODUCTION"
   secret_access_key: "$AWS_SECRET_ACCESS_KEY_PRODUCTION"
