@@ -18,7 +18,7 @@ def handle_event(event:, context:)
 end
 
 def handle_swagger
-  $swagger_doc = JSON.parse File.read('./swagger.json') if $swagger_doc.nil?
+  $swagger_doc = JSON.parse File.read('swagger.json') if $swagger_doc.nil?
 
   respond 200, $swagger_doc
 end
