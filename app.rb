@@ -3,10 +3,28 @@ require 'base64'
 require 'lib/message'
 require 'lib/errors'
 
+# Main handler:
 def handle_event(event:, context:)
-  begin
-    raise "Invalid request" if event["path"] != "/api/v0.1/recap/sync-item-metadata-to-scsb"
+  path = event["path"]
+  method = event["httpMethod"].downcase
 
+  if method == 'post' && path == "/api/v0.1/recap/sync-item-metadata-to-scsb"
+    return handle_sync_item_metadata_to_scsb event
+  elsif method == 'get' && path == "/docs/sync-item-metadata-to-scsb"
+    return handle_swagger
+  else
+    raise "Invalid request"
+  end
+end
+
+def handle_swagger
+  $swagger_doc = JSON.parse File.read('./swagger.json') if $swagger_doc.nil?
+
+  respond 200, $swagger_doc
+end
+
+def handle_sync_item_metadata_to_scsb (event)
+  begin
     params = parse_params event
 
     message = prepare_message params
