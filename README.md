@@ -31,6 +31,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 
 ### Running events locally
 
+The following will invoke the lambda against the sample `event.json`
 ```
 sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml --profile [aws profile]
 ```
@@ -43,6 +44,12 @@ When populating an SQS queue, the `aws sqs` cli tool may be useful for inspectin
 
 ```
 aws sqs --endpoint http://localhost:4576 --profile local receive-message --region us-east-1 --queue-url http://localhost:4576/queue/sierra-updates-for-scsb-local --attribut-names All --message-attribute-names All --max-number-of-messages 10
+```
+
+Update `event.json` as follows:
+
+```
+sam local generate-event apigateway aws-proxy --path api/v0.1/recap/sync-item-metadata-to-scsb --method POST --body "{ \"barcodes\": [ 1234 ], \"user_email\": \"email@example.com\"}" > event.json
 ```
 
 ### Running server locally

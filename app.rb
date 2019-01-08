@@ -1,11 +1,15 @@
+require 'base64'
+
 require 'lib/message'
 require 'lib/errors'
 
 def handle_event(event:, context:)
   begin
-    validate_request event
+    raise "Invalid request" if event["path"] != "/api/v0.1/recap/sync-item-metadata-to-scsb"
 
-    message = prepare_message event['queryStringParameters']
+    params = parse_params event
+
+    message = prepare_message params
     
     # Push to queue:
     response = message.send_update_message_to_sqs.to_h
@@ -21,7 +25,7 @@ def handle_event(event:, context:)
 end
 
 def prepare_message(params)
-  barcodes = params['barcodes'].strip.split(/[\W\s]+/)
+  barcodes = params['barcodes']
   user_email = params['user_email'].strip
 
   # Create message instance
@@ -32,16 +36,23 @@ def prepare_message(params)
   message
 end
 
-def validate_request(event)
-  raise "Invalid request" if event["path"] != "/api/v0.1/recap/sync-item-metadata-to-scsb"
+def parse_params (event)
+  raise ParameterError.new("No parameters given") if event['body'].blank?
 
-  raise ParameterError.new("No parameters given") if event['queryStringParameters'].blank?
-
-  # Parse request params
-  params = event['queryStringParameters']
+  # Parse body
+  params = event['body']
+  params = Base64.decode64 params if event['isBase64Encoded']
+  begin
+    params = JSON.parse params
+  rescue Exception => e
+    raise ParameterError.new("Error parsing JSON body: #{e.message}")
+  end
 
   raise ParameterError.new("Missing barcodes parameter") if params['barcodes'].blank?
+  raise ParameterError.new("Barcodes parameter must be an array. #{params['barcodes'].class} given.") if ! params['barcodes'].is_a?(Array)
   raise ParameterError.new("Missing user_email parameter") if params['user_email'].blank?
+
+  params
 end
 
 def respond(statusCode = 200, body = nil)

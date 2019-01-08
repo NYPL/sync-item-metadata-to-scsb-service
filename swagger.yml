@@ -1,0 +1,59 @@
+swagger: '2.0'
+info:
+ version: '0.1'
+ title: Sync Item Metadata to SCSB Service
+ description: Endpoint for queueing item metadata sync jobs
+basePath: /api
+schemes:
+ - https
+tags:
+ - name: hold-request-eligibilty
+   description: Patrons Holds Eligibility API
+paths:
+  '/v0.1/recap/sync-item-metadata-to-scsb':
+    post:
+      tags:
+       - recap
+      summary: Submit a request to sync item metadata to SCSB for specified barcodes
+      produces:
+       - application/json
+      consumes:
+       - application/json
+      parameters:
+      - name: SyncItemMetadataToScsbRequest
+        in: body
+        description: Object describing item(s) to sync to SCSB
+        required: true
+        schema:
+          $ref: "#/definitions/SyncItemMetadataToScsbRequest"
+      responses:
+        '200':
+          description: Successful operation
+          schema:
+            $ref: "#/definitions/SyncItemMetadataToScsbResponse"
+definitions:
+  SyncItemMetadataToScsbResponse:
+    type: object
+    properties:
+      success:
+        type: boolean
+        example: true
+      result:
+        type: object
+        properties:
+          successful:
+            type: array
+            items:
+              type: object
+              properties:
+                id:
+                  type: string
+  SyncItemMetadataToScsbRequest:
+    type: object
+    properties:
+      barcodes:
+        type: array
+        items:
+          type: string
+      email:
+        type: string
