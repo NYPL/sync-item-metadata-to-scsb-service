@@ -13,7 +13,8 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::224280085904:role/lambda_basic_execution
   runtime: ruby2.5
-  handler_name: app.handle_event
+  module_name: app
+  handler_name: handle_event
   environment_variables:
   - SQS_QUEUE_URL=na
   skip_cleanup: true
@@ -27,7 +28,8 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
-  handler_name: app.handle_event
+  module_name: app
+  handler_name: handle_event
   environment_variables:
   - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK4wgasGCSqGSIb3DQEHBqCBnTCBmgIBADCBlAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwe1oC58ZpRLL/MS5wCARCAZ5Kqhcv6JsqYnfOQx0U2riNDk4l/vkbh5os0qZEuf35VhgUylkEVk86Lr7hv8MD30POiL3nPsefEn5HxgIrgNNOmsjNjv0eQXXeefIHUGsNRNEPirDEesS33/4ZYPc/FZ62UF4tC8kI=
   skip_cleanup: true
@@ -41,7 +43,8 @@ deploy:
   region: us-east-1
   role: arn:aws:iam::946183545209:role/lambda-full-access
   runtime: ruby2.5
-  handler_name: app.handle_event
+  module_name: app
+  handler_name: handle_event
   environment_variables:
   - SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAALcwgbQGCSqGSIb3DQEHBqCBpjCBowIBADCBnQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyXGnzTuZcRzFTjPNcCARCAcFwFMNi6Gq1FnWrI/NVZrLAVywAGEkJR3r+jhZv8iKy6xTJ8s9eBK1pOc7iy6S64twdhIBRk8qttmkSUqRZfv87iySrOLARNG/V4gjMFM5x+/e7YsROHCzBPPyqT61/oiNoClgauPyeL7WUz4Ezes8U=
   skip_cleanup: true
