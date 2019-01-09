@@ -55,5 +55,5 @@ definitions:
         type: array
         items:
           type: string
-      email:
+      user_email:
         type: string

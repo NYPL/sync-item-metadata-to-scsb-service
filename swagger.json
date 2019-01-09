@@ -85,7 +85,7 @@
             "type": "string"
           }
         },
-        "email": {
+        "user_email": {
           "type": "string"
         }
       }
