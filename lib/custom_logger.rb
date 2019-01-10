@@ -1,4 +1,5 @@
-class Logger
+
+class CustomLogger
   attr_accessor :level, :message, :level_code, :error_codename, :timestamp, :object
 
   VALID_LEVELS = {
@@ -11,6 +12,9 @@ class Logger
     'ALERT' => 1,
     'EMERGENCY' => 0
   }
+
+  # Set active LOG_LEVEL based on env. Default 'info'
+  LOG_LEVEL = ENV['LOG_LEVEL'].nil? || ! VALID_LEVELS.keys.include?(ENV['LOG_LEVEL'].upcase) ? 'info' : ENV['LOG_LEVEL']
 
   # Creates a customer logger given a hash.
   # Right now, message and level are required, and level must be included in the keys of VALID_LEVELS
@@ -68,6 +72,10 @@ class Logger
                                  levelCode: self.level_code,
                                  errorCodename: self.error_codename,
                                  timestamp: self.timestamp)
+
+    # NOOP if active log_level < level_code
+    return nil if VALID_LEVELS[LOG_LEVEL.upcase] < self.level_code
+
     puts json_message
     return true
   end

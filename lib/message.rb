@@ -1,7 +1,7 @@
 require 'active_model'
 
 require_relative './sqs_client'
-require_relative './logger'
+require_relative './custom_logger'
 
 class Message
   extend ActiveModel::Naming
@@ -43,11 +43,10 @@ class Message
         }
       ]
 
-    Logger.debug "Sending message", entries
+    CustomLogger.debug "Sending message", entries
     sqs.send_message(entries)
   end
 
-=begin
   def send_transfer_message_to_sqs
     sqs = SqsClient.new
     entries = [
@@ -64,7 +63,7 @@ class Message
       ]
     sqs.send_message(entries)
   end
-=end
+
   private
 
   def bib_record_number_format
@@ -83,7 +82,5 @@ class Message
     if invalid_barcodes.count > 0
       errors.add(:barcodes, "Barcode(s) must be 14 numerical digits in length.")
     end
-
-    Logger.debug('Barcode validation errors', errors)
   end
 end
