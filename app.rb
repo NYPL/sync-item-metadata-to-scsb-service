@@ -2,6 +2,7 @@ require 'base64'
 
 require 'lib/message'
 require 'lib/errors'
+require 'lib/logger'
 
 # Main handler:
 def handle_event(event:, context:)
@@ -35,7 +36,7 @@ def handle_sync_item_metadata_to_scsb (event)
     respond 200, { success: true, result: response.to_h }
 
   rescue ParameterError => e
-    respond 400, message: e.message
+    respond 400, message: "ParameterError: #{e.message}"
 
   rescue => e
     respond 500, message: e.message
@@ -43,18 +44,23 @@ def handle_sync_item_metadata_to_scsb (event)
 end
 
 def prepare_message(params)
+  Logger.debug "Preparing message", params
+
   barcodes = params['barcodes']
   user_email = params['user_email'].strip
 
   # Create message instance
   message = Message.new(barcodes: barcodes, protect_cgd: params[:protect_cgd], action: 'update', user_email: user_email)
 
-  raise ParameterError.new("Message validation failed") if message.valid?
+  raise ParameterError.new("Message validation failed: #{message.errors.full_messages}") if ! message.valid?
+  Logger.debug "Prepared message", message
 
   message
 end
 
 def parse_params (event)
+  Logger.debug("Parsing params", event['body'])
+
   raise ParameterError.new("No parameters given") if event['body'].blank?
 
   # Parse body
@@ -70,9 +76,12 @@ def parse_params (event)
   raise ParameterError.new("Barcodes parameter must be an array. #{params['barcodes'].class} given.") if ! params['barcodes'].is_a?(Array)
   raise ParameterError.new("Missing user_email parameter") if params['user_email'].blank?
 
+  Logger.debug("Parsed params", params)
+
   params
 end
 
 def respond(statusCode = 200, body = nil)
+  Logger.debug("Responding with #{statusCode}", body)
   { statusCode: statusCode, body: body.to_json, headers: { "Content-type": "application/json" } }
 end
