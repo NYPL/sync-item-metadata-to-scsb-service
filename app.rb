@@ -1,8 +1,8 @@
 require 'base64'
 
-require 'lib/message'
-require 'lib/errors'
-require 'lib/custom_logger'
+require_relative 'lib/message'
+require_relative 'lib/errors'
+require_relative 'lib/custom_logger'
 
 # Main handler:
 def handle_event(event:, context:)
@@ -31,7 +31,7 @@ def handle_sync_item_metadata_to_scsb (event)
     message = prepare_message params
     
     # Push to queue:
-    response = message.send_update_message_to_sqs.to_h
+    response = message.send_message_to_sqs.to_h
 
     CustomLogger.info "Sent barcodes to SQS", params
 
@@ -50,9 +50,10 @@ def prepare_message(params)
 
   barcodes = params['barcodes']
   user_email = params['user_email'].strip
+  action = params['action'] || 'update'
 
   # Create message instance
-  message = Message.new(barcodes: barcodes, protect_cgd: params[:protect_cgd], action: 'update', user_email: user_email)
+  message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'])
 
   raise ParameterError.new("Message validation failed: #{message.errors.full_messages}") if ! message.valid?
   CustomLogger.debug "Prepared message", message
@@ -76,7 +77,12 @@ def parse_params (event)
 
   raise ParameterError.new("Missing barcodes parameter") if params['barcodes'].blank?
   raise ParameterError.new("Barcodes parameter must be an array. #{params['barcodes'].class} given.") if ! params['barcodes'].is_a?(Array)
+  params['barcodes'] = params['barcodes'].map(&:strip).select { |b| b.strip.match /\w+/ }
+  raise ParameterError.new("No valid barcodes given") if params['barcodes'].empty?
   raise ParameterError.new("Missing user_email parameter") if params['user_email'].blank?
+  raise ParameterError.new("Invalid action") if ! params['action'].blank? && !['update', 'transfer'].include?(params['action'])
+  raise ParameterError.new("Missing bib_record_number for transfer") if params['action'] == 'transfer' && params['bib_record_number'].blank?
+  params['protect_cgd'] = params['protect_cgd'] || false
 
   CustomLogger.debug("Parsed params", params)
 

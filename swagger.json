@@ -78,15 +78,38 @@
     },
     "SyncItemMetadataToScsbRequest": {
       "type": "object",
+      "required": [
+        "barcodes",
+        "user_email"
+      ],
       "properties": {
         "barcodes": {
+          "description": "Array of item barcodes to update/transfer",
           "type": "array",
           "items": {
             "type": "string"
           }
         },
         "user_email": {
+          "description": "Staff email to notify of failures.",
           "type": "string"
+        },
+        "protect_cgd": {
+          "type": "boolean",
+          "default": false
+        },
+        "action": {
+          "type": "string",
+          "description": "Is this an 'update' or a 'transfer'?",
+          "enum": [
+            "update",
+            "transfer"
+          ],
+          "default": "update"
+        },
+        "bib_record_number": {
+          "type": "string",
+          "description": "Bib number to transfer items to. Required if action is 'transfer'."
         }
       }
     }

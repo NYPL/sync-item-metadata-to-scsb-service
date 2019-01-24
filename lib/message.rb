@@ -29,24 +29,24 @@ class Message
     return invalid
   end
 
-  def send_update_message_to_sqs
+  def send_message_to_sqs
     sqs = SqsClient.new
-    entries = [
-        {
-          id: self.barcodes.first,
-          message_body: JSON.generate({
-            barcodes: self.barcodes,
-            protectCGD: self.protect_cgd,
-            action: self.action,
-            user_email: self.user_email
-          })
-        }
-      ]
+    entry = {
+      id: self.barcodes.first,
+      message_body: JSON.generate({
+        barcodes: self.barcodes,
+        protectCGD: self.protect_cgd,
+        action: self.action,
+        user_email: self.user_email
+      })
+    }
+    entry[:bibRecordNumber] = self.bib_record_number if self.action == 'transfer'
 
-    CustomLogger.debug "Sending message", entries
-    sqs.send_message(entries)
+    CustomLogger.debug "Sending message", entry
+    sqs.send_message([entry])
   end
 
+=begin
   def send_transfer_message_to_sqs
     sqs = SqsClient.new
     entries = [
@@ -63,7 +63,7 @@ class Message
       ]
     sqs.send_message(entries)
   end
-
+=end
   private
 
   def bib_record_number_format
