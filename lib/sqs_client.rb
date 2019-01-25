@@ -1,6 +1,7 @@
 require 'aws-sdk-sqs'
 
 require_relative './kms_client'
+require_relative './custom_logger'
 
 class SqsClient
   def initialize
@@ -21,10 +22,15 @@ class SqsClient
   end 
 
   def send_message(entries)
-    @sqs.send_message_batch({
-      queue_url: @sqs_queue_url,
-      entries: entries,
-    })
+    begin
+      @sqs.send_message_batch({
+        queue_url: @sqs_queue_url,
+        entries: entries,
+      })
+    rescue Exception => e
+      CustomLogger.error "SqsClient error: #{e.message}"
+      raise e
+    end
   end 
 
   def create_queue
