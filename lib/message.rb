@@ -40,7 +40,7 @@ class Message
         user_email: self.user_email
       })
     }
-    entry[:bibRecordNumber] = self.bib_record_number if self.action == 'transfer'
+    entry[:message_body]['bibRecordNumber'] = self.bib_record_number if self.action == 'transfer'
 
     CustomLogger.debug "Sending message", entry
     sqs.send_message([entry])
