@@ -51,9 +51,10 @@ def prepare_message(params)
   barcodes = params['barcodes']
   user_email = params['user_email'].strip
   action = params['action'] || 'update'
+  source = params['source']
 
   # Create message instance
-  message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'])
+  message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'], source: source)
 
   raise ParameterError.new("Message validation failed: #{message.errors.full_messages}") if ! message.valid?
   CustomLogger.debug "Prepared message", message
@@ -83,6 +84,7 @@ def parse_params (event)
   raise ParameterError.new("Invalid action") if ! params['action'].blank? && !['update', 'transfer'].include?(params['action'])
   raise ParameterError.new("Missing bib_record_number for transfer") if params['action'] == 'transfer' && params['bib_record_number'].blank?
   params['protect_cgd'] = params['protect_cgd'] || false
+  raise ParameterError.new("Invalid source") if params['source'].present? && !['bib-item-store-update', 'scsbuster', ''].include?(params['source'])
 
   CustomLogger.debug("Parsed params", params)
 

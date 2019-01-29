@@ -18,6 +18,10 @@ describe 'app', :type => :controller do
       expect(parse_params({ 'body' => { 'protect_cgd' => false, 'user_email' => 'user@example.com', 'barcodes' => ['1'] }.to_json })['protect_cgd']).to eq(false)
       expect(parse_params({ 'body' => { 'protect_cgd' => true, 'user_email' => 'user@example.com', 'barcodes' => ['1'] }.to_json })['protect_cgd']).to eq(true)
     end
+
+    it 'throws error if source invalid' do
+      expect { parse_params({ 'body' => { 'protect_cgd' => true, 'user_email' => 'user@example.com', 'barcodes' => ['1'], 'source' => 'fladeedle' }.to_json }) }.to raise_error(ParameterError)
+    end
   end
 
   describe '#prepare_message' do
@@ -35,12 +39,13 @@ describe 'app', :type => :controller do
     it 'builds transfer message based on params' do
       # Must match: /^[b]\d{8}[x|\d]$/
       bnum = "b#{'1' * 9}"
-      message = prepare_message({ 'user_email' => 'user@example.com', 'barcodes' => ['1' * 14], 'action' => 'transfer', 'bib_record_number' => bnum })
+      message = prepare_message({ 'user_email' => 'user@example.com', 'barcodes' => ['1' * 14], 'action' => 'transfer', 'bib_record_number' => bnum, 'source' => 'bib-item-store-update' })
       expect(message).to be_a(Message)
       expect(message.barcodes).to be_a(Array)
       expect(message.action).to eq('transfer')
       expect(message.user_email).to eq('user@example.com')
       expect(message.bib_record_number).to eq(bnum)
+      expect(message.source).to eq('bib-item-store-update')
     end
 
     it 'throws error if transfer missing bib/invalid number' do

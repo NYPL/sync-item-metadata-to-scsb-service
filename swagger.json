@@ -94,6 +94,16 @@
           "description": "Staff email to notify of failures.",
           "type": "string"
         },
+        "source": {
+          "description": "Optional, indicates the source of the sync request (i.e. who is requesting it).",
+          "type": "string",
+          "enum": [
+            "bib-item-store-update",
+            "scsbuster",
+            ""
+          ],
+          "default": ""
+        },
         "protect_cgd": {
           "type": "boolean",
           "default": false

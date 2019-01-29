@@ -7,7 +7,7 @@ class Message
   extend ActiveModel::Naming
   include ActiveModel::Validations
   include ActiveModel::Model
-  attr_accessor :barcodes, :user_email, :protect_cgd, :action, :bib_record_number, :user_email
+  attr_accessor :barcodes, :user_email, :protect_cgd, :action, :bib_record_number, :source
 
   validate :barcode_format, :bib_record_number_format
 
@@ -34,7 +34,8 @@ class Message
       barcodes: self.barcodes,
       protectCGD: self.protect_cgd,
       action: self.action,
-      user_email: self.user_email
+      user_email: self.user_email,
+      source: self.source
     }
     message_body['bibRecordNumber'] = self.bib_record_number if self.action == 'transfer'
 
