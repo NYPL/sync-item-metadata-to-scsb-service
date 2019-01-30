@@ -1,7 +1,6 @@
 require 'active_model'
 
 require_relative './sqs_client'
-require_relative './custom_logger'
 
 class Message
   extend ActiveModel::Naming
@@ -49,7 +48,7 @@ class Message
     sqs = SqsClient.new
     entry = prepare_message_for_sqs
 
-    CustomLogger.debug "Sending message", entry
+    $logger.debug "Sending message", entry
     sqs.send_message([entry])
   end
 

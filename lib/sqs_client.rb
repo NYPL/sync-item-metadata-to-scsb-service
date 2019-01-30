@@ -1,7 +1,6 @@
 require 'aws-sdk-sqs'
 
 require_relative './kms_client'
-require_relative './custom_logger'
 
 class SqsClient
   def initialize
@@ -28,7 +27,7 @@ class SqsClient
         entries: entries,
       })
     rescue Exception => e
-      CustomLogger.error "SqsClient error: #{e.message}"
+      $logger.error "SqsClient error: #{e.message}"
       raise e
     end
   end 

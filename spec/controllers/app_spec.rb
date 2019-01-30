@@ -3,6 +3,10 @@ require 'spec_helper'
 require_relative '../../app'
 
 describe 'app', :type => :controller do
+  before do
+    $logger = NyplLogFormatter.new(STDOUT, level: ENV['LOG_LEVEL'] || 'info')
+  end
+
   describe '#parse_params' do
     it 'throws error if barcodes missing/invalid' do
       expect { parse_params({ 'body' => {}.to_json }) }.to raise_error(ParameterError)

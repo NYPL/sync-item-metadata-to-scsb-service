@@ -49,7 +49,7 @@ aws sqs --endpoint http://localhost:4576 --profile local receive-message --regio
 Update `event.json` as follows:
 
 ```
-sam local generate-event apigateway aws-proxy --path api/v0.1/recap/sync-item-metadata-to-scsb --method POST --body "{ \"barcodes\": [ 1234 ], \"user_email\": \"email@example.com\"}" > event.json
+sam local generate-event apigateway aws-proxy --path api/v0.1/recap/sync-item-metadata-to-scsb --method POST --body "{ \"barcodes\": [ \"01234567891011\" ], \"user_email\": \"email@example.com\"}" > event.json
 ```
 
 ### Running server locally

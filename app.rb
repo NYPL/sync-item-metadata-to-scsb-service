@@ -1,11 +1,21 @@
 require 'base64'
+require 'nypl_log_formatter'
 
 require_relative 'lib/message'
 require_relative 'lib/errors'
-require_relative 'lib/custom_logger'
+
+def init
+  return if $initialized
+
+  $logger = NyplLogFormatter.new(STDOUT, level: ENV['LOG_LEVEL'] || 'info')
+
+  $initialized = true
+end
 
 # Main handler:
 def handle_event(event:, context:)
+  init
+
   path = event["path"]
   method = event["httpMethod"].downcase
 
@@ -33,7 +43,7 @@ def handle_sync_item_metadata_to_scsb (event)
     # Push to queue:
     response = message.send_message_to_sqs.to_h
 
-    CustomLogger.info "Sent barcodes to SQS", params
+    $logger.info "Sent barcodes to SQS", params
 
     respond 200, { success: true, result: response.to_h }
 
@@ -46,7 +56,7 @@ def handle_sync_item_metadata_to_scsb (event)
 end
 
 def prepare_message(params)
-  CustomLogger.debug "Preparing message", params
+  $logger.debug "Preparing message", params
 
   barcodes = params['barcodes']
   user_email = params['user_email'].strip
@@ -57,13 +67,13 @@ def prepare_message(params)
   message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'], source: source)
 
   raise ParameterError.new("Message validation failed: #{message.errors.full_messages}") if ! message.valid?
-  CustomLogger.debug "Prepared message", message
+  $logger.debug "Prepared message", message
 
   message
 end
 
 def parse_params (event)
-  CustomLogger.debug("Parsing params", event['body'])
+  $logger.debug("Parsing params", event['body'])
 
   raise ParameterError.new("No parameters given") if event['body'].blank?
 
@@ -86,12 +96,12 @@ def parse_params (event)
   params['protect_cgd'] = params['protect_cgd'] || false
   raise ParameterError.new("Invalid source") if params['source'].present? && !['bib-item-store-update', 'scsbuster', ''].include?(params['source'])
 
-  CustomLogger.debug("Parsed params", params)
+  $logger.debug("Parsed params", params)
 
   params
 end
 
 def respond(statusCode = 200, body = nil)
-  CustomLogger.debug("Responding with #{statusCode}", body)
+  $logger.debug("Responding with #{statusCode}", body)
   { statusCode: statusCode, body: body.to_json, headers: { "Content-type": "application/json" } }
 end
