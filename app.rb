@@ -67,13 +67,13 @@ def prepare_message(params)
   message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'], source: source)
 
   raise ParameterError.new("Message validation failed: #{message.errors.full_messages}") if ! message.valid?
-  $logger.debug "Prepared message", message
+  $logger.debug "Prepared message", message: message.prepare_message_for_sqs
 
   message
 end
 
 def parse_params (event)
-  $logger.debug("Parsing params", event['body'])
+  $logger.debug("Parsing params", eventBody: event['body'])
 
   raise ParameterError.new("No parameters given") if event['body'].blank?
 
