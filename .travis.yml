@@ -1,28 +1,65 @@
 language:
-- python
 - ruby
-python:
-- '2.7'
 install:
 - bundle install
-- pip install awscli
-- pip install aws-sam-cli
-cache: bundler
+cache:
+- bundler
 script:
-- bundle exec rspec
+- bundle exec rspec -fd
 deploy:
-  provider: script
-  script: ./scripts/travis-deploy.sh $TRAVIS_BRANCH
-    skip_cleanup: true
+- provider: lambda
+  function_name: SyncItemMetadataToScsbService-development
+  description: "A small service for queuing metadata sync requests to SCSB"
+  region: us-east-1
+  role: arn:aws:iam::224280085904:role/lambda_basic_execution
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - SQS_QUEUE_URL=na
+  - LOG_LEVEL=debug
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_DEVELOPMENT"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_DEVELOPMENT"
   on:
-    all_branches: true
-    condition: $TRAVIS_BRANCH =~ ^(development|qa|production)$
+    branch: development
+- provider: lambda
+  function_name: SyncItemMetadataToScsbService-qa
+  description: "A small service for queuing metadata sync requests to SCSB"
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - "SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAAK4wgasGCSqGSIb3DQEHBqCBnTCBmgIBADCBlAYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAwe1oC58ZpRLL/MS5wCARCAZ5Kqhcv6JsqYnfOQx0U2riNDk4l/vkbh5os0qZEuf35VhgUylkEVk86Lr7hv8MD30POiL3nPsefEn5HxgIrgNNOmsjNjv0eQXXeefIHUGsNRNEPirDEesS33/4ZYPc/FZ62UF4tC8kI="
+  - LOG_LEVEL=debug
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_QA"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_QA"
+  on:
+    branch: qa
+- provider: lambda
+  function_name: SyncItemMetadataToScsbService-production
+  description: "A small service for queuing metadata sync requests to SCSB"
+  region: us-east-1
+  role: arn:aws:iam::946183545209:role/lambda-full-access
+  runtime: ruby2.5
+  module_name: app
+  handler_name: handle_event
+  environment_variables:
+  - "SQS_QUEUE_URL=AQECAHh7ea2tyZ6phZgT4B9BDKwguhlFtRC6hgt+7HbmeFsrsgAAALcwgbQGCSqGSIb3DQEHBqCBpjCBowIBADCBnQYJKoZIhvcNAQcBMB4GCWCGSAFlAwQBLjARBAyXGnzTuZcRzFTjPNcCARCAcFwFMNi6Gq1FnWrI/NVZrLAVywAGEkJR3r+jhZv8iKy6xTJ8s9eBK1pOc7iy6S64twdhIBRk8qttmkSUqRZfv87iySrOLARNG/V4gjMFM5x+/e7YsROHCzBPPyqT61/oiNoClgauPyeL7WUz4Ezes8U="
+  skip_cleanup: true
+  access_key_id: "$AWS_ACCESS_KEY_ID_PRODUCTION"
+  secret_access_key: "$AWS_SECRET_ACCESS_KEY_PRODUCTION"
+  on:
+    branch: master
 notifications:
   email:
     on_failure: always
 env:
   global:
-  - AWS_DEFAULT_REGION=us-east-2
+  - AWS_DEFAULT_REGION=us-east-1
   - secure: JkQzTyKegZDL4YDfT/4xVLJcU3EgoNBXNozO4hQfIK+50J9RpySTqmCXQDAehVOoXClgTzS0auir4NmBMXOxr2mzqNQaOTyaY/hS9E7Qgr/Ba6iI5CAJGCwhAirjzq/GJbv7y9wpmQZOapCVGaklNGE9d3r77nj5rIBUXAA6rKEAMCYB5RsbUcqJvKM8vTyRD2LD6enFX9KNO2O3cKZUOZILPaI+nhPcG4v+OQp0ySSvnEvs5Jq/v0PEkUY6ozB7wMauUQpgXu0b3YDMCedGqlb4bp10H++cU4BYoxxdqa7t82xEbNvXM9NpigF2mPxDjX+Pw4Nkjpv6roKYbFNl1Aj+9ZsRYJpfTd3DSxi6qP5KWr9OBeJ1z3zcXSramG5lg9ZuB1dueVr0kCyT3wm8MKrQONHu5jKHtroNgd+ofvIIHR1wdxWB0/a9raTyzlLbwvaH1FWjw1bV8wAMEYns1lhPwZgvzriM696Q2ZdTJvXAEXlBpkhWkm5iiUHnWKvK4qyzWZ5Kg1bbmmkAimzK9dk6SBcs6tPj39vOy8S0q9AUuuYQGpsuYE94qsqGABqdRshdvEUaWl6zEM6K9iDnRjK1B91nh7S/pxWhCzzMkqrWy9hczN8xcjUo/VyV1KWs/RgN0Gr6paSwht9gU6yVUKp5e91i29OdZMy6O9EvgNc=
   - secure: q1Qr+17G4HkdESmq0zO9DdVSyjBHcakuWKd8L/Z5YsKSzi+ZS0ykZQ6EOT7d9LVHqKqW0d6895BBaDfgOoSpYkiNKtjrcRreFDWquK6hMOAbXDzbul24YiHQIroIMBA+WLuhi0zI4UAgtNgs/kK080mNqIzhHb1M2jVTU+7ldR4+AXDPIFjjxmPh1ihcClRJsQL4mQAP1jofgmBF8R+PBF8ZliJmq+xV/UwjGWbQGDXLZjeG+8pI+aE4AHMA8a5CuRw5inMrHRZspWAI4n3+pEAlouYUx7klgZOEz6y3afYDoe4+5VbNrfXfPeFrD7Jt8NYwZtUIsliMxLH/H64gtzh+yXqlFQOnij+0sEk0tX3qsdLBCGw/eqE7MnJwJC4xKFMnGgSOzB6l3EVFvj87v3OxxuSFktKz/xOhSbKvvHtXOnrxd1OYCK6V62FKYhSe6N/WtGG+/+l4pIHKxlaxglTEjdfpWG+Ac1iXt/aJYj1LlMjjmZnIshEM9Xv3xrNkebehVHlxDUGxVNcrCKb0NiKshdoE1D/lT2SSJMLee6aMjG4YZYsL3FxrO2/+Yrhfsp/EQjXYrSJ2aZmNkfmLUF5bjX73IeIWcVPqCiJ84bOfPDlOXWync2jyQRnZL1aOsuLPHM6HhD94J8Dn9AdnTebuWF/TlxiHNrddHZJeF38=
   - secure: gdYp2K3JvLFD7g5MaxXENvxNDRhd+SXlpFskq/zGDy5icK3+3LnyX6nkMHPtsGXt3G2EqQfHH2RuzEnxEYo+YyYB2xMmvaAx+aVOQs03HRGS051EKCTarbuzvItLsc1DGBDgg59iygYQtlP6x7HfGhAmuBPvTdYqb4rNwLYsiHGECB3JH4wyGRows4xzvLW13p3NtvAbdOoni8w7Zv125GFcpm3D7zHEIlP19tPIh1s4f4VXVFNnXjA/EkWpiIE5ma98XsecqF73LdN74AWLo3Oc5dkNhSdXZmvV9a/hIKUUATvin4aJH0os5sI96KoWaRCtLLRcuA0RD3GKLiqUDqvJWT9LtyJqzMnOe/PmjwhLV+c0zwnoYEhjRUlGDcaHnw4c9KFXkq9tMetLx+/mKZ+BejROSh7sTfqqkd04OeoTZ5fBuuzUt4yxGlFTbOfBrvf6nhXrGPeL9PI+Fwwzz+5Tmzd1zwQB50v9Nu2VK1RsIqYkwc2kcRM0TVOVGRg4lM1Msjoqgd4VC66rOhxujfvLFGp/es67awgB0lOdwytysXTU3K2tN0TfpK03jrT8a7ACMGnnO9LPATqzmLRJdrHoxaNrKWML2oeM7hIoXkq+JOWjv03TxiA0A9cwxzbB3zuAv3SV1jmxAOxc7vw1xEYqOH84mH/Kudkf5I4KgsI=

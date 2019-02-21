@@ -6,7 +6,7 @@ class Message
   extend ActiveModel::Naming
   include ActiveModel::Validations
   include ActiveModel::Model
-  attr_accessor :barcodes, :user_email, :protect_cgd, :action, :bib_record_number, :user_email
+  attr_accessor :barcodes, :user_email, :protect_cgd, :action, :bib_record_number, :source
 
   validate :barcode_format, :bib_record_number_format
 
@@ -28,41 +28,30 @@ class Message
     return invalid
   end
 
-  def send_update_message_to_sqs
-    sqs = SqsClient.new
-    entries = [
-        {
-          id: self.barcodes.first,
-          message_body: JSON.generate({
-            barcodes: self.barcodes,
-            protectCGD: self.protect_cgd,
-            action: self.action,
-            user_email: self.user_email
-          })
-        }
-      ]
+  def prepare_message_for_sqs
+    message_body = {
+      barcodes: self.barcodes,
+      protectCGD: self.protect_cgd,
+      action: self.action,
+      user_email: self.user_email,
+      source: self.source
+    }
+    message_body['bibRecordNumber'] = self.bib_record_number if self.action == 'transfer'
 
-    sqs.send_message(entries)
+    entry = {
+      id: self.barcodes.first,
+      message_body: JSON.generate(message_body)
+    }
   end
 
-=begin
-  def send_transfer_message_to_sqs
+  def send_message_to_sqs
     sqs = SqsClient.new
-    entries = [
-        {
-          id: self.barcodes.first,
-          message_body: JSON.generate({
-            barcodes: self.barcodes,
-            protectCGD: self.protect_cgd,
-            action: self.action,
-            bibRecordNumber: self.bib_record_number,
-            user_email: self.user_email
-          })
-        }
-      ]
-    sqs.send_message(entries)
+    entry = prepare_message_for_sqs
+
+    $logger.debug "Sending message", entry
+    sqs.send_message([entry])
   end
-=end
+
   private
 
   def bib_record_number_format

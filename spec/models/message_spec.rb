@@ -54,4 +54,35 @@ describe Message do
     expect(no_barcodes.valid_barcodes).to         eq([])
     expect(no_barcodes.invalid_barcodes).to       eq([])
   end
+
+  describe '#prepare_message_for_sqs' do
+    it 'should prepare a update message' do
+      entry = Message.new(barcodes: ['123'], protect_cgd: false, action: 'update', user_email: 'user@example.com').prepare_message_for_sqs
+      expect(entry).to be_a(Hash)
+      expect(entry[:id]).to eq('123')
+      expect(entry[:message_body]).to be_a(String)
+
+      parsed_entry = JSON.parse entry[:message_body]
+      expect(parsed_entry).to be_a(Hash)
+      expect(parsed_entry['barcodes']).to be_a(Array)
+      expect(parsed_entry['barcodes'].first).to eq('123')
+      expect(parsed_entry['action']).to eq('update')
+      expect(parsed_entry['user_email']).to eq('user@example.com')
+    end
+
+    it 'should prepare a transfer message' do
+      entry = Message.new(barcodes: ['123'], protect_cgd: false, action: 'transfer', user_email: 'user@example.com', bib_record_number: 'b1234').prepare_message_for_sqs
+      expect(entry).to be_a(Hash)
+      expect(entry[:id]).to eq('123')
+      expect(entry[:message_body]).to be_a(String)
+
+      parsed_entry = JSON.parse entry[:message_body]
+      expect(parsed_entry).to be_a(Hash)
+      expect(parsed_entry['barcodes']).to be_a(Array)
+      expect(parsed_entry['barcodes'].first).to eq('123')
+      expect(parsed_entry['action']).to eq('transfer')
+      expect(parsed_entry['user_email']).to eq('user@example.com')
+      expect(parsed_entry['bibRecordNumber']).to eq('b1234')
+    end
+  end
 end

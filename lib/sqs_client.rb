@@ -21,10 +21,15 @@ class SqsClient
   end 
 
   def send_message(entries)
-    @sqs.send_message_batch({
-      queue_url: @sqs_queue_url,
-      entries: entries,
-    })
+    begin
+      @sqs.send_message_batch({
+        queue_url: @sqs_queue_url,
+        entries: entries,
+      })
+    rescue Exception => e
+      $logger.error "SqsClient error: #{e.message}"
+      raise e
+    end
   end 
 
   def create_queue

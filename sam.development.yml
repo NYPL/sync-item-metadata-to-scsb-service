@@ -6,12 +6,12 @@ Resources:
   SyncItemMetadataToScsbService:
     Type: AWS::Serverless::Function
     Properties:
-      FunctionName: SyncItemMetadataToScsb-development
+      FunctionName: SyncItemMetadataToScsbService-development
       Handler: app.handle_event
       Runtime: ruby2.5
       Timeout: 10
       Role: arn:aws:iam::224280085904:role/lambda_basic_execution
       Environment:
         Variables:
-          SQS_QUEUE_URL:
+          SQS_QUEUE_URL: na
       
