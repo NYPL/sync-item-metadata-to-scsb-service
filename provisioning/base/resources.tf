@@ -34,7 +34,7 @@ resource "aws_s3_bucket_object" "uploaded_zip" {
 resource "aws_lambda_function" "lambda_instance" {
   description   = "Serves /api/v0.1/recap/sync-item-metadata-to-scsb"
   function_name = "SyncItemMetadataToScsbListener-${var.environment}"
-  handler       = "index.handler"
+  handler       = "app.handle_event"
   memory_size   = 128
   role          = "arn:aws:iam::946183545209:role/lambda-full-access"
   runtime       = "ruby3.3"
