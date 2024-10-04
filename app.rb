@@ -39,7 +39,7 @@ def handle_sync_item_metadata_to_scsb (event)
     params = parse_params event
 
     message = prepare_message params
-    
+
     # Push to queue:
     response = message.send_message_to_sqs.to_h
 
@@ -62,7 +62,7 @@ def prepare_message(params)
   user_email = params['user_email'].strip
   action = params['action'] || 'update'
   source = params['source']
-
+  
   # Create message instance
   message = Message.new(barcodes: barcodes, protect_cgd: params['protect_cgd'], action: action, user_email: user_email, bib_record_number: params['bib_record_number'], source: source)
 

@@ -47,7 +47,6 @@ class Message
   def send_message_to_sqs
     sqs = SqsClient.new
     entry = prepare_message_for_sqs
-
     $logger.debug "Sending message", entry
     sqs.send_message([entry])
   end
