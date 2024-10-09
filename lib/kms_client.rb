@@ -3,7 +3,7 @@ require 'base64'
 
 class KmsClient
   def initialize
-    if ENV['AWS_ACCESS_KEY_ID']
+    if ENV['LOCAL']
       @kms = Aws::KMS::Client.new(
         region: 'us-east-1',
         access_key_id:  ENV['AWS_ACCESS_KEY_ID'],

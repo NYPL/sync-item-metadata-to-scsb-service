@@ -19,7 +19,7 @@ class SqsClient
     # Extract SQS queue name from URL:
     @sqs_queue_name = @sqs_queue_url.match(/[\w-]+$/)[0]
 
-    if ENV['AWS_ACCESS_KEY_ID']
+    if ENV['LOCAL']
       @sqs = Aws::SQS::Client.new(
         region: 'us-east-1',
         access_key_id:  ENV['AWS_ACCESS_KEY_ID'],

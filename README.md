@@ -22,12 +22,7 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 
 ### Git Workflow
 
- * Cut branches from `development`.
- * Create PR against `development`.
- * After review, PR author merges.
- * Merge `development` > `qa`
- * Merge `qa` > `master`
- * Tag version bump in `master`
+This app uses [Main-QA-Production workflow](https://github.com/NYPL/engineering-general/blob/main/standards/git-workflow.md#main-qa-production)
 
 ### Running events locally
 
