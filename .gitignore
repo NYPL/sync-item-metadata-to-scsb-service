@@ -1,2 +1,6 @@
 vendor
 packaged-template.yaml
+provisioning/base/dist.zip
+provisioning/qa/.terraform*
+provisioning/production/.terraform*
+provisioning/base/.terraform*

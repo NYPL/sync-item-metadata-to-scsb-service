@@ -7,7 +7,7 @@ Resources:
     Type: AWS::Serverless::Function
     Properties:
       Handler: app.handle_event
-      Runtime: ruby2.5
+      Runtime: ruby3.3
       Timeout: 10
       Environment:
         Variables:
