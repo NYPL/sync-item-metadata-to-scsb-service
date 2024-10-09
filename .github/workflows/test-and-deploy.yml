@@ -33,8 +33,8 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
       - name: Deploy app to QA
         run: |
-          terraform -chdir=lambda/provisioning/qa init -input=false
-          terraform -chdir=lambda/provisioning/qa apply -auto-approve -input=false
+          terraform -chdir=provisioning/qa init -input=false
+          terraform -chdir=provisioning/qa apply -auto-approve -input=false
   deploy-lambda-production:
     runs-on: ubuntu-latest
     permissions:
@@ -56,5 +56,5 @@ jobs:
       - uses: hashicorp/setup-terraform@v2
       - name: Deploy app to QA
         run: |
-          terraform -chdir=lambda/provisioning/production init -input=false
-          terraform -chdir=lambda/provisioning/production apply -auto-approve -input=false
+          terraform -chdir=provisioning/production init -input=false
+          terraform -chdir=provisioning/production apply -auto-approve -input=false
