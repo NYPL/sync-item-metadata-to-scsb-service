@@ -22,18 +22,13 @@ All config is in sam.[ENVIRONMENT].yml templates, encrypted as necessary.
 
 ### Git Workflow
 
- * Cut branches from `development`.
- * Create PR against `development`.
- * After review, PR author merges.
- * Merge `development` > `qa`
- * Merge `qa` > `master`
- * Tag version bump in `master`
+This app uses [Main-QA-Production workflow](https://github.com/NYPL/engineering-general/blob/main/standards/git-workflow.md#main-qa-production)
 
 ### Running events locally
 
 The following will invoke the lambda against the sample `event.json`
 ```
-sam local invoke --event event.json --region us-east-1 --template sam.[ENVIRONMENT].yml --profile [aws profile]
+AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local invoke --event event.json --region us-east-1 --template sam.qa.yml --profile nypl-digital-dev
 ```
 
 Note that the AWS profile used must be able to decrypt the `SQS_QUEUE_URL` value in your chosen sam file.
@@ -76,20 +71,4 @@ bundle exec rspec
 
 ## Deploy
 
-Deployments are entirely handled by Travis-ci.com. To deploy to development, qa, or production, commit code to the `development`, `qa`, and `master` branches on origin, respectively.
-
-### Manual deployments
-
-If for some reason you need to skip Travis, the following models manually deploying QA:
-
-To package for QA:
-
-```
-sam package --region us-east-1 --template-file sam.qa.yml --output-template-file packaged-template.yaml --profile nypl-digital-dev --s3-bucket nypl-travis-builds-qa
-```
-
-To deploy to QA:
-
-```
-aws cloudformation deploy --template-file packaged-template.yaml --stack-name sync-item-metadata-to-scsb-service-qa --profile nypl-digital-dev --region us-east-1 --capabilities CAPABILITY_IAM
-```
+Deployments are entirely handled by Github Actions. To deploy to qa or production, `qa`, and `production` branches on origin, respectively.
