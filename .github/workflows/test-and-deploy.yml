@@ -25,7 +25,8 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::946183545209:role/GithubActionsDeployerRole
           aws-region: us-east-1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
       - name: Install gems
         run: |
           bundle install
@@ -47,7 +48,8 @@ jobs:
         with:
           role-to-assume: arn:aws:iam::946183545209:role/GithubActionsDeployerRole
           aws-region: us-east-1
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
+      - uses: ruby/setup-ruby@v1
       - name: Install gems
         run: |
           bundle install
