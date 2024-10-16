@@ -3,15 +3,10 @@ require 'base64'
 
 class KmsClient
   def initialize
-    if ENV['LOCAL']
-      @kms = Aws::KMS::Client.new(
-        region: 'us-east-1',
-        access_key_id:  ENV['AWS_ACCESS_KEY_ID'],
-        secret_access_key: ENV['AWS_SECRET_ACCESS_KEY']
-      )
-    else
-      @kms = Aws::KMS::Client.new(region: 'us-east-1')
-    end
+    # To work around https://github.com/aws/aws-sam-cli/issues/3118:
+    ENV.delete "AWS_SESSION_TOKEN" if ENV['AWS_SESSION_TOKEN'] == ''
+    @kms = Aws::KMS::Client.new(region: 'us-east-1') if @kms.nil?
+    @kms
   end
 
   def decrypt(cipher)
