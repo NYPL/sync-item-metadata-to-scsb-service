@@ -28,7 +28,7 @@ This app uses [Main-QA-Production workflow](https://github.com/NYPL/engineering-
 
 The following will invoke the lambda against the sample `event.json`
 ```
-AWS_ACCESS_KEY_ID=[your access key id] AWS_SECRET_ACCESS_KEY=[your secret access key] sam local invoke --event event.json --region us-east-1 --template sam.qa.yml --profile nypl-digital-dev
+sam local invoke --event event.json --region us-east-1 --template sam.qa.yml --profile nypl-digital-dev
 ```
 
 Note that the AWS profile used must be able to decrypt the `SQS_QUEUE_URL` value in your chosen sam file.
